@@ -17,25 +17,42 @@ Escáner modular para sistemas locales. Detecta puertos activos, valida procesos
 - Visualización de recursos del sistema (RAM, CPU, disco)
 - Identificación de puertos libres para despliegue seguro
 
-## Instalación
+## Instalación y ejecución
 
-```bash
-git clone https://github.com/tuusuario/PUDShield.git
-cd PUDShield
-pip install -r requirements.txt
-python EscaneoP.py
+### Requisitos
 
-Requiere Python 3.8+ y privilegios de administrador para bloqueo de IPs en Windows.
+- Python 3.8 o superior  
+- Sistema operativo compatible (Windows recomendado para bloqueo de IPs)  
+- Acceso a terminal o consola con permisos de ejecución
 
-Uso básico
-Al ejecutar el script, se presenta un menú interactivo con opciones para escanear, analizar, validar y responder ante conexiones sospechosas. Las decisiones del analista se registran en archivos persistentes (puertos_seguro.txt, escaneo_logs.txt).
+### Instalación
 
-Estructura del Proyecto
-PUDShield/
-├── EscaneoP.py              # Script principal
-├── puertos_seguro.txt       # Puertos marcados como seguros
-├── escaneo_logs.txt         # Registro de eventos
-├── README.md                # Documentación
+1. Clona el repositorio o descarga el archivo directamente:
+   ```bash
+   git clone https://github.com/Nira2729/PUDShield.git
+   cd PUDShield
+   ```
+
+   O descarga el archivo `EscaneoP.py` desde la pestaña **Code > Download ZIP** y extrae el contenido.
+
+2. Instala las dependencias necesarias:
+   ```bash
+   pip install psutil requests
+   ```
+
+3. Ejecuta el programa:
+   ```bash
+   python EscaneoP.py
+   ```
+
+> Si estás en Windows, ejecuta la terminal como administrador para habilitar el bloqueo de IPs.
+
+---
+
+### Archivos generados automáticamente
+
+- `puertos_seguro.txt`: puertos marcados como seguros por el analista  
+- `escaneo_logs.txt`: registro de eventos y decisiones tomadas
 
 Licencia
 Este proyecto se dsitribuye bajo la licencia MIT.
