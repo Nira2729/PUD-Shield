@@ -167,42 +167,86 @@ class PUDShield:
                 self.bloquear_ip(ip)
                 self.log(f"IP bloqueada por respuesta ante incidente: {ip}")
     def ver_conexiones(self):
-        # Muestra todas las conexiones activas con IP remota, PID y proceso
         print("\n🔍 Conexiones activas:")
         self.log("🔍 Conexiones activas:")
+
         conexiones = psutil.net_connections(kind='inet')
+        validados = []
+        sospechosos = []
+        established = []
+
         for conn in conexiones:
             laddr = f"{conn.laddr.ip}:{conn.laddr.port}" if conn.laddr else "N/A"
             raddr = f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else "N/A"
             pid = conn.pid
             estado = conn.status
+
             try:
                 proceso = psutil.Process(pid).name() if pid else "N/A"
             except psutil.NoSuchProcess:
                 proceso = "Desconocido"
+
             sospechosa = self.es_ip_sospechosa(conn.raddr.ip) if conn.raddr else False
             validacion = self.validar_servicio(pid, conn.laddr.port) if pid else "N/A"
             mensaje = f"[{estado}] {laddr} → {raddr} | PID: {pid} ({proceso}) {'⚠️ Sospechosa' if sospechosa else ''} | {validacion}"
-            print(mensaje)
-            self.log(mensaje)
+
+            if "✅" in validacion:
+                validados.append(mensaje)
+            elif "⚠️" in validacion or "❌" in validacion:
+                sospechosos.append(mensaje)
+            elif estado == "ESTABLISHED":
+                established.append(mensaje)
+
+        print("\n✅ Puertos seguros validados:")
+        for m in validados:
+            print(m)
+            self.log(m)
+
+        print("\n⚠️ Puertos con procesos no estándar:")
+        for m in sospechosos:
+            print(m)
+            self.log(m)
+
+        print("\n🌐 Conexiones establecidas:")
+        for m in established:
+            print(m)
+            self.log(m)
 
     def ver_servicios_escucha(self):
-        # Muestra todos los puertos en estado LISTEN y el proceso que los usa
-        print("\nServicios en escucha:")
-        self.log("Servicios en escucha:")
+        print("\n🔊 Servicios en escucha:")
+        self.log("🔊 Servicios en escucha:")
+
         conexiones = psutil.net_connections(kind='inet')
+        validados = []
+        sospechosos = []
+
         for conn in conexiones:
             if conn.status == 'LISTEN':
                 laddr = f"{conn.laddr.ip}:{conn.laddr.port}" if conn.laddr else "N/A"
                 pid = conn.pid
+
                 try:
                     proceso = psutil.Process(pid).name() if pid else "N/A"
                 except psutil.NoSuchProcess:
                     proceso = "Desconocido"
+
                 validacion = self.validar_servicio(pid, conn.laddr.port) if pid else "N/A"
                 mensaje = f"[LISTEN] {laddr} | PID: {pid} ({proceso}) | {validacion}"
-                print(mensaje)
-                self.log(mensaje)
+
+                if "✅" in validacion:
+                    validados.append(mensaje)
+                else:
+                    sospechosos.append(mensaje)
+
+        print("\n✅ Puertos seguros en escucha:")
+        for m in validados:
+            print(m)
+            self.log(m)
+
+        print("\n⚠️ Puertos sospechosos en escucha:")
+        for m in sospechosos:
+            print(m)
+            self.log(m)
 
     def ver_puertos_abiertos(self):
         # Muestra puertos abiertos y el proceso que los usa
@@ -292,3 +336,4 @@ def menu():
 # Ejecuta el menú si el script se corre directamente
 if __name__ == "__main__":
     menu()
+
