@@ -51,6 +51,7 @@ PUD-Shield es una herramienta modular de análisis y respuesta ante amenazas en 
 ### Archivos generados automáticamente
 
 - `escaneo_logs.txt`: registro de eventos y decisiones tomadas
+- `puetos_seguros.txt`: puertos validados como seguros por el usuario
 
 Licencia
 Este proyecto se dsitribuye bajo la licencia MIT.
