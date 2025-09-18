@@ -20,18 +20,18 @@ def guardar_puerto_validado(puerto):
         with open(PUERTOS_VALIDADOS_FILE, "a") as f:
             f.write(f"{puerto}\n")
     except Exception as e:
-        print(f"❌ Error al guardar puerto validado: {e}")
+        print(f"Error al guardar puerto validado: {e}")
 
 def verificar_firma(ruta):
     comando = f'powershell "Get-AuthenticodeSignature \'{ruta}\' | Select-Object Status"'
     try:
         resultado = subprocess.check_output(comando, shell=True, text=True)
         if "Valid" in resultado:
-            return "✅ Firma digital válida"
+            return "Firma digital válida"
         else:
-            return "⚠️ Firma no válida o ausente"
+            return "Firma no válida o ausente"
     except:
-        return "❌ No se pudo verificar la firma"
+        return "No se pudo verificar la firma"
     
 class PUDShield:
     def __init__(self):
@@ -83,16 +83,16 @@ class PUDShield:
             else:
                 return f"✅ Servicio legítimo: {nombre} | Ruta: {ruta} | {firma}"
         except psutil.NoSuchProcess:
-            return f"❌ Proceso no encontrado para PID {pid}"
+            return f"Proceso no encontrado para PID {pid}"
         except Exception as e:
-            return f"❌ Error al validar PID {pid}: {e}"
+            return f"Error al validar PID {pid}: {e}"
     def analizar_puerto_sospechoso(self):
         print("\n🔎 Análisis de puerto sospechoso")
 
         try:
             puerto = int(input("Ingresa el número de puerto a analizar: ").strip())
         except ValueError:
-            print("❌ Puerto inválido.")
+            print("Puerto inválido.")
             return
 
         conexiones = psutil.net_connections(kind='all')
@@ -114,18 +114,18 @@ class PUDShield:
                     tiempo = datetime.datetime.fromtimestamp(proc.create_time()).strftime("%Y-%m-%d %H:%M:%S")
 
                     print(f"\n🔍 Proceso en puerto {puerto}:")
-                    print(f"📌 Nombre: {nombre}")
-                    print(f"📂 Ruta: {ruta}")
-                    print(f"🕒 Inicio: {tiempo}")
+                    print(f"Nombre: {nombre}")
+                    print(f"Ruta: {ruta}")
+                    print(f"Inicio: {tiempo}")
 
                     validacion = self.validar_servicio(pid, puerto)
                     print(f"🔎 Validación: {validacion}")
 
                     if conn.raddr and hasattr(conn.raddr, 'ip'):
                         ip_remota = conn.raddr.ip
-                        print(f"🌐 IP remota: {ip_remota}")
+                        print(f"IP remota: {ip_remota}")
                         reputacion = self.reputacion_ip_profunda(ip_remota)
-                        print(f"📊 Reputación: {reputacion}")
+                        print(f"Reputación: {reputacion}")
                         print(f"{'⚠️ Sospechosa' if self.es_ip_sospechosa(ip_remota) else '✅ IP válida'}")
 
                         self.respuesta_ante_incidente(ip_remota, puerto, pid)
@@ -143,7 +143,7 @@ class PUDShield:
                     print(f"❌ Error al analizar el puerto: {e}")
 
         if not encontrados:
-            print("🔕 No se encontró ningún proceso usando ese puerto.")
+            print(" No se encontró ningún proceso usando ese puerto.")
 
     def modo_silencioso(self):
         print("\n🕶️ Ejecutando escaneo en modo silencioso...")
@@ -160,12 +160,12 @@ class PUDShield:
     def respuesta_ante_incidente(self, ip, puerto, pid):
         reputacion = self.reputacion_ip_profunda(ip)
         if "hosting" in reputacion.lower() or "vpn" in reputacion.lower() or self.es_ip_sospechosa(ip):
-            print(f"\n🚨 IP sospechosa detectada: {ip}")
-            print(f"📊 Reputación: {reputacion}")
+            print(f"\nIP sospechosa detectada: {ip}")
+            print(f"Reputación: {reputacion}")
             confirmar = input("¿Deseas bloquear esta IP? (s/n): ").strip().lower()
             if confirmar == "s":
                 self.bloquear_ip(ip)
-                self.log(f"🚨 IP bloqueada por respuesta ante incidente: {ip}")
+                self.log(f"IP bloqueada por respuesta ante incidente: {ip}")
     def ver_conexiones(self):
         # Muestra todas las conexiones activas con IP remota, PID y proceso
         print("\n🔍 Conexiones activas:")
@@ -188,8 +188,8 @@ class PUDShield:
 
     def ver_servicios_escucha(self):
         # Muestra todos los puertos en estado LISTEN y el proceso que los usa
-        print("\n🧩 Servicios en escucha:")
-        self.log("🧩 Servicios en escucha:")
+        print("\nServicios en escucha:")
+        self.log("Servicios en escucha:")
         conexiones = psutil.net_connections(kind='inet')
         for conn in conexiones:
             if conn.status == 'LISTEN':
@@ -206,8 +206,8 @@ class PUDShield:
 
     def ver_puertos_abiertos(self):
         # Muestra puertos abiertos y el proceso que los usa
-        print("\n🚪 Puertos abiertos:")
-        self.log("🚪 Puertos abiertos:")
+        print("\nPuertos abiertos:")
+        self.log("Puertos abiertos:")
         conexiones = psutil.net_connections(kind='inet')
         for conn in conexiones:
             if conn.status == 'LISTEN':
@@ -224,14 +224,14 @@ class PUDShield:
 
     def mostrar_recursos(self):
         # Muestra uso actual de RAM, CPU y disco
-        print("\n📊 Recursos del sistema:")
-        self.log("📊 Recursos del sistema:")
+        print("\nRecursos del sistema:")
+        self.log("Recursos del sistema:")
         ram = psutil.virtual_memory().percent
         cpu = psutil.cpu_percent(interval=1)
         disco = psutil.disk_usage('/').percent
-        print(f"🧠 RAM usada: {ram}%")
-        print(f"⚙️ CPU usada: {cpu}%")
-        print(f"💾 Disco usado: {disco}%")
+        print(f"RAM usada: {ram}%")
+        print(f"CPU usada: {cpu}%")
+        print(f"Disco usado: {disco}%")
         self.log(f"RAM: {ram}%, CPU: {cpu}%, Disco: {disco}%")
 
     def bloquear_ip(self, ip):
@@ -240,18 +240,18 @@ class PUDShield:
             comando = f'netsh advfirewall firewall add rule name="Bloqueo_{ip}" dir=in action=block remoteip={ip}'
             try:
                 subprocess.run(comando, shell=True)
-                print(f"🚫 IP {ip} bloqueada exitosamente.")
-                self.log(f"🚫 IP bloqueada: {ip}")
+                print(f"IP {ip} bloqueada exitosamente.")
+                self.log(f"IP bloqueada: {ip}")
             except Exception as e:
-                print(f"❌ Error al bloquear IP: {e}")
+                print(f"Error al bloquear IP: {e}")
         else:
-            print("⚠️ Bloqueo automático solo disponible en Windows.")
+            print("Bloqueo automático solo disponible en Windows.")
             
 def menu():
     shield = PUDShield()
 
     while True:
-        print("\n📊 Menú Escaneo PUDShield")
+        print("\nMenú Escaneo PUD-Shield")
         print("1. Ver conexiones activas")
         print("2. Ver servicios en escucha")
         print("3. Bloquear IP sospechosa")
@@ -268,11 +268,11 @@ def menu():
         elif opcion == "2":
             shield.ver_servicios_escucha()
         elif opcion == "3":
-            print("\n🔐 Bloqueo de IP")
+            print("\nBloqueo de IP")
             print("Escribe la IP a bloquear o escribe 'salir' para volver al menú.")
             ip = input("IP: ").strip()
             if ip.lower() == "salir" or ip == "":
-                print("↩️ Volviendo al menú principal...")
+                print("Volviendo al menú principal...")
             else:
                 shield.bloquear_ip(ip)
         elif opcion == "4":
@@ -284,10 +284,10 @@ def menu():
         elif opcion == "7":
             shield.modo_silencioso()
         elif opcion == "8":
-            print("👋 Saliendo...")
+            print("Saliendo...")
             break
         else:
-            print("❌ Opción inválida.")
+            print("Opción inválida.")
 
 # Ejecuta el menú si el script se corre directamente
 if __name__ == "__main__":
