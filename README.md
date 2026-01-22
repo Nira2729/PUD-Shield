@@ -1,5 +1,5 @@
 # PUD-Shield
-PUD-Shield es una herramienta modular para sistemas locales. Escanea puertos activos, valida procesos, consulta reputación OSINT y permite bloquear IPs sospechosas. Incluye modo silencioso, visualización de recursos y persistencia de decisiones.
+PUD-Shield es una herramienta experimental para sistemas locales. Escanea puertos activos, valida procesos, consulta reputación OSINT y permite bloquear IPs sospechosas. Incluye modo silencioso, visualización de recursos y persistencia de decisiones.
 
 # PUD-Shield
 
