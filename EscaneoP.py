@@ -70,18 +70,18 @@ class PUDShield:
             firma = verificar_firma(ruta) if self.sistema.lower() == "windows" else "🔒 Verificación no disponible"
 
             if puerto in self.puertos_validados:
-                return f"✅ Puerto {puerto} validado manualmente | {firma}"
+                return f" Puerto {puerto} validado manualmente | {firma}"
 
             legitimos_windows = ["System", "svchost.exe", "explorer.exe", "msedge.exe", "chrome.exe", "mysqld.exe"]
             legitimos_linux = ["sshd", "systemd", "nginx", "apache2", "postgres"]
             sistema = self.sistema.lower()
 
             if sistema == "windows" and nombre not in legitimos_windows:
-                return f"⚠️ Proceso no estándar: {nombre} | Ruta: {ruta} | {firma}"
+                return f" Proceso no estándar: {nombre} | Ruta: {ruta} | {firma}"
             elif sistema == "linux" and nombre not in legitimos_linux:
-                return f"⚠️ Proceso no estándar: {nombre} | Ruta: {ruta}"
+                return f" Proceso no estándar: {nombre} | Ruta: {ruta}"
             else:
-                return f"✅ Servicio legítimo: {nombre} | Ruta: {ruta} | {firma}"
+                return f" Servicio legítimo: {nombre} | Ruta: {ruta} | {firma}"
         except psutil.NoSuchProcess:
             return f"Proceso no encontrado para PID {pid}"
         except Exception as e:
@@ -105,7 +105,7 @@ class PUDShield:
 
                 try:
                     if pid is None:
-                        print(f"⚠️ Puerto {puerto} está en uso pero no tiene PID asociado.")
+                        print(f" Puerto {puerto} está en uso pero no tiene PID asociado.")
                         continue
 
                     proc = psutil.Process(pid)
@@ -126,7 +126,7 @@ class PUDShield:
                         print(f"IP remota: {ip_remota}")
                         reputacion = self.reputacion_ip_profunda(ip_remota)
                         print(f"Reputación: {reputacion}")
-                        print(f"{'⚠️ Sospechosa' if self.es_ip_sospechosa(ip_remota) else '✅ IP válida'}")
+                        print(f"{' Sospechosa' if self.es_ip_sospechosa(ip_remota) else ' IP válida'}")
 
                         self.respuesta_ante_incidente(ip_remota, puerto, pid)
 
@@ -134,8 +134,8 @@ class PUDShield:
                     if confirmar == "s":
                         guardar_puerto_validado(puerto)
                         self.puertos_validados.append(puerto)
-                        self.log(f"✅ Puerto {puerto} marcado como válido por el analista.")
-                        print(f"✅ Puerto {puerto} ahora será tratado como seguro.")
+                        self.log(f" Puerto {puerto} marcado como válido por el analista.")
+                        print(f" Puerto {puerto} ahora será tratado como seguro.")
 
                 except psutil.NoSuchProcess:
                     print("❌ Proceso no encontrado.")
@@ -154,8 +154,8 @@ class PUDShield:
                 pid = conn.pid
                 validacion = self.validar_servicio(pid, puerto)
                 self.log(f"[Silencioso] Puerto {puerto} | PID: {pid} | {validacion}")
-                if "⚠️" in validacion or "❌" in validacion:
-                    print(f"⚠️ Posible anomalía en puerto {puerto}: {validacion}")
+                if "Alert" in validacion or "X" in validacion:
+                    print(f" Posible anomalía en puerto {puerto}: {validacion}")
 
     def respuesta_ante_incidente(self, ip, puerto, pid):
         reputacion = self.reputacion_ip_profunda(ip)
@@ -167,8 +167,8 @@ class PUDShield:
                 self.bloquear_ip(ip)
                 self.log(f"IP bloqueada por respuesta ante incidente: {ip}")
     def ver_conexiones(self):
-        print("\n🔍 Conexiones activas:")
-        self.log("🔍 Conexiones activas:")
+        print("\n Conexiones activas:")
+        self.log(" Conexiones activas:")
 
         conexiones = psutil.net_connections(kind='inet')
         validados = []
@@ -190,31 +190,31 @@ class PUDShield:
             validacion = self.validar_servicio(pid, conn.laddr.port) if pid else "N/A"
             mensaje = f"[{estado}] {laddr} → {raddr} | PID: {pid} ({proceso}) {'⚠️ Sospechosa' if sospechosa else ''} | {validacion}"
 
-            if "✅" in validacion:
+            if "✓" in validacion:
                 validados.append(mensaje)
-            elif "⚠️" in validacion or "❌" in validacion:
+            elif "Alert" in validacion or "X" in validacion:
                 sospechosos.append(mensaje)
             elif estado == "ESTABLISHED":
                 established.append(mensaje)
 
-        print("\n✅ Puertos seguros validados:")
+        print("\n Puertos seguros validados:")
         for m in validados:
             print(m)
             self.log(m)
 
-        print("\n⚠️ Puertos con procesos no estándar:")
+        print("\n Puertos con procesos no estándar:")
         for m in sospechosos:
             print(m)
             self.log(m)
 
-        print("\n🌐 Conexiones establecidas:")
+        print("\n Conexiones establecidas:")
         for m in established:
             print(m)
             self.log(m)
 
     def ver_servicios_escucha(self):
-        print("\n🔊 Servicios en escucha:")
-        self.log("🔊 Servicios en escucha:")
+        print("\n Servicios en escucha:")
+        self.log(" Servicios en escucha:")
 
         conexiones = psutil.net_connections(kind='inet')
         validados = []
@@ -233,17 +233,17 @@ class PUDShield:
                 validacion = self.validar_servicio(pid, conn.laddr.port) if pid else "N/A"
                 mensaje = f"[LISTEN] {laddr} | PID: {pid} ({proceso}) | {validacion}"
 
-                if "✅" in validacion:
+                if "✓" in validacion:
                     validados.append(mensaje)
                 else:
                     sospechosos.append(mensaje)
 
-        print("\n✅ Puertos seguros en escucha:")
+        print("\n Puertos seguros en escucha:")
         for m in validados:
             print(m)
             self.log(m)
 
-        print("\n⚠️ Puertos sospechosos en escucha:")
+        print("\n Puertos sospechosos en escucha:")
         for m in sospechosos:
             print(m)
             self.log(m)
@@ -336,4 +336,5 @@ def menu():
 # Ejecuta el menú si el script se corre directamente
 if __name__ == "__main__":
     menu()
+
 
