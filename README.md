@@ -47,14 +47,14 @@ Al ejecutar el script verás el menú principal:
   7. Ejecutar modo silencioso
   8. Editar lista blanca de procesos
   9. Salir
-════════════════════════════════════════
+
 Flujo recomendado
 Opción 7 (modo silencioso)
-    └─▶ Detecta anomalías
-         └─▶ Opción 6 (analizar puerto específico)
-              └─▶ Confirmar proceso sospechoso
-                   └─▶ Opción 3 (bloquear IP)
-                        └─▶ Todo queda en escaneo_logs.txt
+Detecta anomalías
+Opción 6 (analizar puerto específico)
+Confirmar proceso sospechoso
+Opción 3 (bloquear IP)
+Todo queda en escaneo_logs.txt
 
 Archivos generados
 escaneo_logs.txt: Registro completo de eventos y decisiones con timestamp.
