@@ -1,0 +1,42 @@
+# Changelog
+Todos los cambios notables de PUD-Shield se documentan en este archivo.
+
+[2.0.0] - 2026-03-02
+# Seguridad
+
+Eliminado shell=True en todos los subprocesos — prevenía inyección de comandos
+Agregada validación de formato de IP antes de cualquier operación de bloqueo
+Reemplazados todos los except: genéricos por excepciones específicas
+
+# Nuevas funcionalidades
+
+Verificación de permisos de administrador al inicio con advertencia
+Caché OSINT persistente en osint_cache.json para no agotar el límite de ipinfo.io
+Lista blanca de procesos legítimos en archivo .txt editable por el usuario
+Opción 8 en el menú para abrir la lista blanca directamente desde la herramienta
+
+# Mejoras
+
+verificar_firma() ahora usa @lru_cache — evita lanzar múltiples procesos de PowerShell
+Eliminada dependencia requests, reemplazada por urllib.request de la stdlib
+Sistema de logging reemplazado por el módulo logging estándar de Python
+disk_usage ahora detecta correctamente la ruta según el sistema operativo
+Conteo de anomalías al finalizar el modo silencioso
+
+# Correcciones
+
+Typo corregido: puertos_seguro.txt → puertos_seguros.txt
+Crash al llamar disk_usage('/') en Windows corregido
+Manejo de psutil.AccessDenied agregado en todos los métodos relevantes
+
+
+[1.0.0] - 2025-17-09
+# Lanzamiento inicial
+
+Escaneo de puertos y servicios en escucha
+Validación de procesos y firma digital en Windows
+Reputación OSINT integrada vía ipinfo.io
+Bloqueo de IPs sospechosas mediante firewall
+Persistencia de puertos validados por el usuario
+Modo silencioso para escaneo automatizado
+Visualización de recursos del sistema (RAM, CPU, disco)
